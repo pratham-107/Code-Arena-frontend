@@ -189,7 +189,7 @@ const ContestProblems = () => {
                             whiteSpace: "pre-line",
                           }}
                         >
-                          {problem.description?.substring(0, 200)}...
+                          {problem.description}
                         </Typography>
                       </Box>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

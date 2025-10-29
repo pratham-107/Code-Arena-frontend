@@ -20,11 +20,6 @@ import {
   Tab,
   CircularProgress,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
 } from "@mui/material";
 import {
   CalendarToday,
@@ -48,8 +43,6 @@ const Contest = () => {
   const [contests, setContests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedContest, setSelectedContest] = useState(null);
 
   const contestsPerPage = 10;
 
@@ -258,24 +251,8 @@ const Contest = () => {
   // Handle participate
   const handleParticipate = (contest) => {
     console.log(`Participating in contest ${contest.id}`);
-    // Set the selected contest and open confirmation dialog
-    setSelectedContest(contest);
-    setConfirmDialogOpen(true);
-  };
-
-  // Handle confirmation dialog close
-  const handleConfirmDialogClose = () => {
-    setConfirmDialogOpen(false);
-    setSelectedContest(null);
-  };
-
-  // Handle confirmation dialog confirm
-  const handleConfirmDialogConfirm = () => {
-    setConfirmDialogOpen(false);
-    // Redirect to contest problems page
-    if (selectedContest) {
-      navigate(`/contest/${selectedContest.id}/problems`);
-    }
+    // Navigate directly to contest problems page
+    navigate(`/contest/${contest.id}/problems`);
   };
 
   // Reset filters
@@ -760,30 +737,6 @@ const Contest = () => {
         )}
 
         {/* Confirmation Dialog */}
-        <Dialog
-          open={confirmDialogOpen}
-          onClose={handleConfirmDialogClose}
-          aria-labelledby="confirm-dialog-title"
-          aria-describedby="confirm-dialog-description"
-        >
-          <DialogTitle id="confirm-dialog-title">
-            View Contest
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="confirm-dialog-description">
-              Are you sure you want to view the contest "{selectedContest?.name}"?
-              You will be redirected to the contest problems page.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleConfirmDialogClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleConfirmDialogConfirm} color="primary" variant="contained">
-              View Contest
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Container>
     </Box>
   );

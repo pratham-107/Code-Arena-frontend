@@ -66,9 +66,9 @@ const Problems = () => {
     example1: { input: "", output: "" },
     example2: { input: "", output: "" },
     constraints: "",
-    points: 100,
-    timeLimit: 2,
-    memoryLimit: 256,
+    points: "",
+    timeLimit: "",
+    memoryLimit: "",
   });
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -314,9 +314,9 @@ const Problems = () => {
       example1: { input: "", output: "" },
       example2: { input: "", output: "" },
       constraints: "",
-      points: 100,
-      timeLimit: 2,
-      memoryLimit: 256,
+      points: "",
+      timeLimit: "",
+      memoryLimit: "",
     });
   };
 
@@ -347,13 +347,28 @@ const Problems = () => {
     }));
   };
 
+  // Handle numeric input changes with proper empty value handling
+  const handleNumericChange = (field, value) => {
+    // Allow empty values to be stored as empty strings rather than default numbers
+    const numericValue = value === '' ? '' : parseInt(value) || 0;
+    setNewProblem(prev => ({
+      ...prev,
+      [field]: value === '' ? '' : numericValue
+    }));
+  };
+
   // Handle adding a new problem
   const handleAddProblem = async () => {
     try {
       // Get current user ID
       const currentUser = getCurrentUser();
+      
+      // Prepare problem data with proper default values for empty numeric fields
       const problemData = {
         ...newProblem,
+        points: newProblem.points === '' ? 100 : parseInt(newProblem.points) || 0,
+        timeLimit: newProblem.timeLimit === '' ? 2 : parseInt(newProblem.timeLimit) || 1,
+        memoryLimit: newProblem.memoryLimit === '' ? 256 : parseInt(newProblem.memoryLimit) || 1,
         createdBy: currentUser ? currentUser.id : "anonymous"
       };
 
@@ -1145,7 +1160,7 @@ const Problems = () => {
                   variant="outlined"
                   type="number"
                   value={newProblem.points}
-                  onChange={(e) => handleNewProblemChange('points', parseInt(e.target.value) || 0)}
+                  onChange={(e) => handleNumericChange('points', e.target.value)}
                   sx={{ mb: 2 }}
                 />
                 <TextField
@@ -1154,7 +1169,7 @@ const Problems = () => {
                   variant="outlined"
                   type="number"
                   value={newProblem.timeLimit}
-                  onChange={(e) => handleNewProblemChange('timeLimit', parseInt(e.target.value) || 1)}
+                  onChange={(e) => handleNumericChange('timeLimit', e.target.value)}
                   sx={{ mb: 2 }}
                 />
                 <TextField
@@ -1163,7 +1178,7 @@ const Problems = () => {
                   variant="outlined"
                   type="number"
                   value={newProblem.memoryLimit}
-                  onChange={(e) => handleNewProblemChange('memoryLimit', parseInt(e.target.value) || 1)}
+                  onChange={(e) => handleNumericChange('memoryLimit', e.target.value)}
                   sx={{ mb: 2 }}
                 />
               </Grid>

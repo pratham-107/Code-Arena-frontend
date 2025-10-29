@@ -48,7 +48,7 @@ const CreateContest = () => {
   const [contestDescription, setContestDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
-  const [duration, setDuration] = useState(90);
+  const [duration, setDuration] = useState(""); // Changed from 90 to ""
   const [difficulty, setDifficulty] = useState("Medium");
   const [problems, setProblems] = useState([]);
   const [openProblemDialog, setOpenProblemDialog] = useState(false);
@@ -79,7 +79,7 @@ const CreateContest = () => {
   const handleNext = () => {
     if (
       activeStep === 0 &&
-      (!contestTitle || !contestDescription || !startDate || !startTime)
+      (!contestTitle || !contestDescription || !startDate || !startTime || !duration)
     ) {
       alert("Please fill in all required contest details");
       return;
@@ -216,7 +216,7 @@ const CreateContest = () => {
         description: contestDescription.trim(),
         startDate: startDate,
         startTime: startTime,
-        duration: parseInt(duration) || 90,
+        duration: duration === "" ? 90 : parseInt(duration) || 90, // Use 90 as default if empty or invalid
         difficulty: difficulty,
         problems: problems.map(problem => ({
           title: problem.title?.trim() || "",
@@ -264,7 +264,7 @@ const CreateContest = () => {
     setContestDescription("");
     setStartDate("");
     setStartTime("");
-    setDuration(90);
+    setDuration(""); // Changed from 90 to ""
     setDifficulty("Medium");
     setProblems([]);
     // Navigate to contests page
@@ -280,7 +280,7 @@ const CreateContest = () => {
     setContestDescription("");
     setStartDate("");
     setStartTime("");
-    setDuration(90);
+    setDuration(""); // Changed from 90 to ""
     setDifficulty("Medium");
     setProblems([]);
   };
@@ -361,8 +361,13 @@ const CreateContest = () => {
                 Contest Details
               </Typography>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+              <Box sx={{ 
+                display: 'grid',
+                gridTemplateColumns: 'repeat(5, 1fr)',
+                gridTemplateRows: 'repeat(5, 1fr)',
+                gap: '8px'
+              }}>
+                <Box sx={{ gridColumn: 'span 2 / span 2' }}>
                   <TextField
                     fullWidth
                     label="Contest Title"
@@ -376,16 +381,16 @@ const CreateContest = () => {
                       },
                     }}
                   />
-                </Grid>
+                </Box>
 
-                <Grid item xs={12} md={6}>
+                <Box sx={{ gridColumn: 'span 2 / span 2' }}>
                   <TextField
                     fullWidth
                     label="Duration (minutes)"
                     type="number"
                     variant="outlined"
                     value={duration}
-                    onChange={(e) => setDuration(Number(e.target.value))}
+                    onChange={(e) => setDuration(e.target.value)}
                     required
                     sx={{
                       "& .MuiOutlinedInput-root": {
@@ -393,9 +398,9 @@ const CreateContest = () => {
                       },
                     }}
                   />
-                </Grid>
+                </Box>
 
-                <Grid item xs={12} md={6}>
+                <Box sx={{ gridColumn: 'span 2 / span 2' }}>
                   <TextField
                     fullWidth
                     label="Start Date"
@@ -413,9 +418,9 @@ const CreateContest = () => {
                       },
                     }}
                   />
-                </Grid>
+                </Box>
 
-                <Grid item xs={12} md={6}>
+                <Box sx={{ gridColumn: 'span 2 / span 2' }}>
                   <TextField
                     fullWidth
                     label="Start Time"
@@ -433,9 +438,9 @@ const CreateContest = () => {
                       },
                     }}
                   />
-                </Grid>
+                </Box>
 
-                <Grid item xs={12} md={6}>
+                <Box sx={{ gridColumn: 'span 1 / span 1' }}>
                   <FormControl fullWidth>
                     <InputLabel>Contest Difficulty</InputLabel>
                     <Select
@@ -453,9 +458,12 @@ const CreateContest = () => {
                       ))}
                     </Select>
                   </FormControl>
-                </Grid>
+                </Box>
 
-                <Grid item xs={12}>
+                <Box sx={{ 
+                  gridColumn: 'span 5 / span 5',
+                  gridRow: 'span 2 / span 2'
+                }}>
                   <TextField
                     fullWidth
                     label="Contest Description"
@@ -471,8 +479,8 @@ const CreateContest = () => {
                       },
                     }}
                   />
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
             </Box>
           )}
 

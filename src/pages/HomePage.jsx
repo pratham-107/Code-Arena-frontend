@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -23,11 +23,43 @@ import HtmlIcon from "@mui/icons-material/Html";
 import CssIcon from "@mui/icons-material/Css";
 // Import marquee component
 import Marquee from "react-fast-marquee";
+import CountUp from "react-countup";
+import { TypeAnimation } from "react-type-animation";
+import AOS from "aos";
 import { useNavigate } from "react-router-dom";
 import { isAuthenticated } from "../services/auth";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [statsVisible, setStatsVisible] = useState(false);
+  const statsRef = useRef(null);
+
+  // Refresh AOS animations when component mounts
+  useEffect(() => {
+    AOS.refresh();
+  }, []);
+
+  // Trigger animations when stats section comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (statsRef.current) {
+      observer.observe(statsRef.current);
+    }
+
+    return () => {
+      if (statsRef.current) {
+        observer.unobserve(statsRef.current);
+      }
+    };
+  }, []);
 
   const features = [
     {
@@ -133,7 +165,7 @@ const HomePage = () => {
                 Practice, compete, and master algorithms with our competitive
                 programming platform designed for developers.
               </Typography>
-              <Box sx={{ display: "flex", gap: 2, mt: 4, flexWrap: "wrap" }}>
+              <Box sx={{ display: "flex", gap: 2, mt: 4, flexWrap: "wrap" }} data-aos="fade-up" data-aos-delay="500">
                 <Button
                   onClick={handleStartCoding}
                   variant="contained"
@@ -181,7 +213,7 @@ const HomePage = () => {
                 </Button>
               </Box>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }} data-aos="fade-left">
               <Box
                 sx={{
                   backgroundColor: "rgba(0, 0, 0, 0.3)",
@@ -201,17 +233,9 @@ const HomePage = () => {
                     Code Playground
                   </Typography>
                 </Box>
-                <pre
-                  style={{
-                    fontFamily: "monospace",
-                    whiteSpace: "pre-wrap",
-                    overflow: "auto",
-                    color: "#f5f5dc",
-                    fontSize: "0.9rem",
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {`function quickSort(arr) {
+                <TypeAnimation
+                  sequence={[
+                    `function quickSort(arr) {
   if (arr.length <= 1) return arr;
   
   const pivot = arr[Math.floor(arr.length / 2)];
@@ -228,8 +252,25 @@ const HomePage = () => {
   }
   
   return [...quickSort(left), pivot, ...quickSort(right)];
-}`}
-                </pre>
+}`,
+                    3000,
+                    '',
+                    500
+                  ]}
+                  wrapper="pre"
+                  speed={70}
+                  style={{
+                    fontFamily: "monospace",
+                    whiteSpace: "pre-wrap",
+                    overflow: "auto",
+                    color: "#f5f5dc",
+                    fontSize: "0.9rem",
+                    lineHeight: 1.5,
+                    margin: 0,
+                    height: "400px", // Fixed height to prevent layout shifts
+                  }}
+                  repeat={Infinity}
+                />
               </Box>
             </Grid>
           </Grid>
@@ -237,7 +278,10 @@ const HomePage = () => {
       </Box>
 
       {/* First Marquee - Programming Languages */}
-      <Box sx={{ py: 5, backgroundColor: "#ffffff" }}>
+      <Box
+        sx={{ py: 5, backgroundColor: "#ffffff" }}
+        data-aos="fade-up"
+      >
         <Container maxWidth="lg">
           <Typography
             variant="h4"
@@ -247,12 +291,18 @@ const HomePage = () => {
               fontWeight: 700,
               color: "#000000",
             }}
+            data-aos="fade-up"
           >
             Supported Languages
           </Typography>
           <Marquee gradient={false} speed={50} pauseOnHover={true}>
             {[...languageIcons, ...languageIcons].map((icon, index) => (
-              <Box key={index} sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                key={index}
+                sx={{ display: "flex", alignItems: "center" }}
+                data-aos="fade-up"
+                data-aos-delay={index * 50}
+              >
                 {icon}
               </Box>
             ))}
@@ -261,55 +311,91 @@ const HomePage = () => {
       </Box>
 
       {/* Stats Section */}
-      <Box sx={{ py: 6, backgroundColor: "#ffffff" }}>
+      <Box ref={statsRef} sx={{ py: 6, backgroundColor: "#ffffff" }} data-aos="fade-up">
         <Container maxWidth="lg">
           <Grid container spacing={4} justifyContent="center">
-            <Grid size={{ xs: 6, md: 3 }}>
+            <Grid
+              size={{ xs: 6, md: 3 }}
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
               <Box sx={{ textAlign: "center" }}>
                 <Typography
                   variant="h3"
                   sx={{ fontWeight: 700, color: "#000000" }}
                 >
-                  50K+
+                  {statsVisible ? (
+                    <CountUp end={50000} duration={3} separator="," />
+                  ) : (
+                    "50,000"
+                  )}
+                  +
                 </Typography>
                 <Typography variant="body1" sx={{ color: "#666" }}>
                   Active Users
                 </Typography>
               </Box>
             </Grid>
-            <Grid size={{ xs: 6, md: 3 }}>
+            <Grid
+              size={{ xs: 6, md: 3 }}
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
               <Box sx={{ textAlign: "center" }}>
                 <Typography
                   variant="h3"
                   sx={{ fontWeight: 700, color: "#000000" }}
                 >
-                  1000+
+                  {statsVisible ? (
+                    <CountUp end={1000} duration={3} separator="," />
+                  ) : (
+                    "1,000"
+                  )}
+                  +
                 </Typography>
                 <Typography variant="body1" sx={{ color: "#666" }}>
                   Coding Problems
                 </Typography>
               </Box>
             </Grid>
-            <Grid size={{ xs: 6, md: 3 }}>
+            <Grid
+              size={{ xs: 6, md: 3 }}
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
               <Box sx={{ textAlign: "center" }}>
                 <Typography
                   variant="h3"
                   sx={{ fontWeight: 700, color: "#000000" }}
                 >
-                  500+
+                  {statsVisible ? (
+                    <CountUp end={500} duration={3} separator="," />
+                  ) : (
+                    "500"
+                  )}
+                  +
                 </Typography>
                 <Typography variant="body1" sx={{ color: "#666" }}>
                   Contests
                 </Typography>
               </Box>
             </Grid>
-            <Grid size={{ xs: 6, md: 3 }}>
+            <Grid
+              size={{ xs: 6, md: 3 }}
+              data-aos="fade-up"
+              data-aos-delay="400"
+            >
               <Box sx={{ textAlign: "center" }}>
                 <Typography
                   variant="h3"
                   sx={{ fontWeight: 700, color: "#000000" }}
                 >
-                  50+
+                  {statsVisible ? (
+                    <CountUp end={50} duration={3} separator="," />
+                  ) : (
+                    "50"
+                  )}
+                  +
                 </Typography>
                 <Typography variant="body1" sx={{ color: "#666" }}>
                   Programming Languages
@@ -349,7 +435,12 @@ const HomePage = () => {
 
           <Grid container spacing={4}>
             {features.map((feature, index) => (
-              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+              <Grid
+                size={{ xs: 12, sm: 6, md: 3 }}
+                key={index}
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
+              >
                 <Card
                   sx={{
                     height: "100%",
@@ -391,7 +482,10 @@ const HomePage = () => {
       </Box>
 
       {/* Second Marquee - Technologies */}
-      <Box sx={{ py: 3, backgroundColor: "#000000" }}>
+      <Box
+        sx={{ py: 3, backgroundColor: "#000000" }}
+        data-aos="fade-up"
+      >
         <Container maxWidth="lg">
           <Typography
             variant="h4"
@@ -401,12 +495,18 @@ const HomePage = () => {
               fontWeight: 700,
               color: "#f5f5dc",
             }}
+            data-aos="fade-up"
           >
             Built with Modern Technologies
           </Typography>
           <Marquee gradient={false} speed={40} pauseOnHover={true}>
             {[...languageIcons, ...languageIcons].map((icon, index) => (
-              <Box key={index} sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                key={index}
+                sx={{ display: "flex", alignItems: "center" }}
+                data-aos="fade-up"
+                data-aos-delay={index * 50}
+              >
                 {React.cloneElement(icon, {
                   sx: { ...icon.props.sx, color: "#f5f5dc" },
                 })}
@@ -417,10 +517,13 @@ const HomePage = () => {
       </Box>
 
       {/* Benefits Section */}
-      <Box sx={{ py: 10, backgroundColor: "#ffffff" }}>
+      <Box sx={{ py: 10, backgroundColor: "#ffffff" }} data-aos="fade-up">
         <Container maxWidth="lg">
           <Grid container spacing={8} alignItems="center">
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid
+              size={{ xs: 12, md: 6 }}
+              data-aos="fade-right"
+            >
               <Box
                 sx={{
                   backgroundColor: "#000000",
@@ -435,16 +538,9 @@ const HomePage = () => {
                 <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
                   Competitive Programming Environment
                 </Typography>
-                <pre
-                  style={{
-                    fontFamily: "monospace",
-                    whiteSpace: "pre-wrap",
-                    overflow: "auto",
-                    color: "#f5f5dc",
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  {`// Example: Two Sum Problem
+                <TypeAnimation
+                  sequence={[
+                    `// Example: Two Sum Problem
 function twoSum(nums, target) {
   const map = new Map();
   
@@ -459,11 +555,30 @@ function twoSum(nums, target) {
   }
   
   return [];
-}`}
-                </pre>
+}`,
+                    3000,
+                    '',
+                    500
+                  ]}
+                  wrapper="pre"
+                  speed={70}
+                  style={{
+                    fontFamily: "monospace",
+                    whiteSpace: "pre-wrap",
+                    overflow: "auto",
+                    color: "#f5f5dc",
+                    fontSize: "0.9rem",
+                    margin: 0,
+                    height: "400px", // Fixed height to prevent layout shifts
+                  }}
+                  repeat={Infinity}
+                />
               </Box>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid
+              size={{ xs: 12, md: 6 }}
+              data-aos="fade-left"
+            >
               <Typography
                 variant="h2"
                 sx={{
@@ -481,6 +596,8 @@ function twoSum(nums, target) {
                   <Box
                     key={index}
                     sx={{ display: "flex", alignItems: "center", mb: 2 }}
+                    data-aos="fade-up"
+                    data-aos-delay={index * 100}
                   >
                     <CheckCircleIcon sx={{ color: "#000000", mr: 2 }} />
                     <Typography variant="body1" sx={{ fontWeight: 500 }}>
@@ -491,7 +608,7 @@ function twoSum(nums, target) {
               </Box>
 
               {!isAuthenticated() ? (
-                <Box sx={{ display: "flex", gap: 2 }}>
+                <Box sx={{ display: "flex", gap: 2 }} data-aos="fade-up" data-aos-delay="500">
                   <Button
                     onClick={handleSignup}
                     variant="contained"
@@ -559,6 +676,8 @@ function twoSum(nums, target) {
                     },
                     transition: "all 0.3s ease",
                   }}
+                  data-aos="fade-up"
+                  data-aos-delay="500"
                 >
                   Start Solving Problems
                 </Button>
@@ -569,7 +688,10 @@ function twoSum(nums, target) {
       </Box>
 
       {/* Call to Action */}
-      <Box sx={{ py: 10, backgroundColor: "#000000", color: "#f5f5dc" }}>
+      <Box
+        sx={{ py: 10, backgroundColor: "#000000", color: "#f5f5dc" }}
+        data-aos="fade-up"
+      >
         <Container maxWidth="md" sx={{ textAlign: "center" }}>
           <Typography
             variant="h2"
@@ -577,6 +699,7 @@ function twoSum(nums, target) {
               mb: 3,
               fontWeight: 800,
             }}
+            data-aos="fade-up"
           >
             Ready to Level Up Your Coding?
           </Typography>
@@ -588,6 +711,8 @@ function twoSum(nums, target) {
               mx: "auto",
               color: "#e8e8d0",
             }}
+            data-aos="fade-up"
+            data-aos-delay="200"
           >
             Join thousands of developers practicing and competing on our
             platform today.
@@ -613,6 +738,8 @@ function twoSum(nums, target) {
                 },
                 transition: "all 0.3s ease",
               }}
+              data-aos="fade-up"
+              data-aos-delay="400"
             >
               Create Free Account
             </Button>
@@ -637,6 +764,8 @@ function twoSum(nums, target) {
                 },
                 transition: "all 0.3s ease",
               }}
+              data-aos="fade-up"
+              data-aos-delay="400"
             >
               View Upcoming Contests
             </Button>

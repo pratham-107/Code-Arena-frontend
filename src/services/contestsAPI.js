@@ -65,7 +65,7 @@ export const contestAPI = {
       "Sending formatted data to backend:",
       JSON.stringify(formattedData, null, 2)
     );
-    return API.post("/contests", formattedData);
+    return API.post("/api/contests", formattedData);
   },
 
   // Get all contests
