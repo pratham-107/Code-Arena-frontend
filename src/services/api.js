@@ -2,7 +2,8 @@ import axios from "axios";
 
 // Log the API base URL for debugging
 console.log("VITE_API_BASE_URL from env:", import.meta.env.VITE_API_BASE_URL);
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+const apiBaseUrl =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 console.log("Using API base URL:", apiBaseUrl);
 
 // Validate that we're not using localhost in production

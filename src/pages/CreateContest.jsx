@@ -64,9 +64,9 @@ const CreateContest = () => {
   const [example1, setExample1] = useState({ input: "", output: "" });
   const [example2, setExample2] = useState({ input: "", output: "" });
   const [constraints, setConstraints] = useState("");
-  const [problemPoints, setProblemPoints] = useState(100);
-  const [timeLimit, setTimeLimit] = useState(2);
-  const [memoryLimit, setMemoryLimit] = useState(256);
+  const [problemPoints, setProblemPoints] = useState(""); // Changed from 100 to ""
+  const [timeLimit, setTimeLimit] = useState(""); // Changed from 2 to ""
+  const [memoryLimit, setMemoryLimit] = useState(""); // Changed from 256 to ""
 
   // Edit problem state
   const [editingProblemIndex, setEditingProblemIndex] = useState(-1);
@@ -114,9 +114,9 @@ const CreateContest = () => {
       example1,
       example2,
       constraints,
-      points: problemPoints,
-      timeLimit,
-      memoryLimit,
+      points: problemPoints === "" ? 100 : parseInt(problemPoints) || 100,
+      timeLimit: timeLimit === "" ? 2 : parseInt(timeLimit) || 2,
+      memoryLimit: memoryLimit === "" ? 256 : parseInt(memoryLimit) || 256,
     };
 
     if (editingProblemIndex >= 0) {
@@ -138,9 +138,9 @@ const CreateContest = () => {
     setExample1({ input: "", output: "" });
     setExample2({ input: "", output: "" });
     setConstraints("");
-    setProblemPoints(100);
-    setTimeLimit(2);
-    setMemoryLimit(256);
+    setProblemPoints(""); // Changed from 100 to ""
+    setTimeLimit(""); // Changed from 2 to ""
+    setMemoryLimit(""); // Changed from 256 to ""
     setOpenProblemDialog(false);
   };
 
@@ -154,9 +154,9 @@ const CreateContest = () => {
     setExample1(problem.example1 || { input: "", output: "" });
     setExample2(problem.example2 || { input: "", output: "" });
     setConstraints(problem.constraints || "");
-    setProblemPoints(problem.points);
-    setTimeLimit(problem.timeLimit);
-    setMemoryLimit(problem.memoryLimit);
+    setProblemPoints(problem.points === 100 ? "" : problem.points); // Show empty string for default value
+    setTimeLimit(problem.timeLimit === 2 ? "" : problem.timeLimit); // Show empty string for default value
+    setMemoryLimit(problem.memoryLimit === 256 ? "" : problem.memoryLimit); // Show empty string for default value
     setEditingProblemIndex(index);
     setOpenProblemDialog(true);
   };
@@ -178,9 +178,9 @@ const CreateContest = () => {
     setExample1({ input: "", output: "" });
     setExample2({ input: "", output: "" });
     setConstraints("");
-    setProblemPoints(100);
-    setTimeLimit(2);
-    setMemoryLimit(256);
+    setProblemPoints(""); // Changed from 100 to ""
+    setTimeLimit(""); // Changed from 2 to ""
+    setMemoryLimit(""); // Changed from 256 to ""
     setOpenProblemDialog(true);
   };
 
@@ -361,7 +361,7 @@ const CreateContest = () => {
                 Contest Details
               </Typography>
 
-              <Box sx={{ 
+              <Box sx={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(5, 1fr)',
                 gridTemplateRows: 'repeat(5, 1fr)',
@@ -460,7 +460,7 @@ const CreateContest = () => {
                   </FormControl>
                 </Box>
 
-                <Box sx={{ 
+                <Box sx={{
                   gridColumn: 'span 5 / span 5',
                   gridRow: 'span 2 / span 2'
                 }}>
@@ -1139,7 +1139,7 @@ const CreateContest = () => {
                   type="number"
                   variant="outlined"
                   value={problemPoints}
-                  onChange={(e) => setProblemPoints(Number(e.target.value))}
+                  onChange={(e) => setProblemPoints(e.target.value === '' ? '' : Number(e.target.value))}
                   required
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -1156,7 +1156,7 @@ const CreateContest = () => {
                   type="number"
                   variant="outlined"
                   value={timeLimit}
-                  onChange={(e) => setTimeLimit(Number(e.target.value))}
+                  onChange={(e) => setTimeLimit(e.target.value === '' ? '' : Number(e.target.value))}
                   required
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -1173,7 +1173,7 @@ const CreateContest = () => {
                   type="number"
                   variant="outlined"
                   value={memoryLimit}
-                  onChange={(e) => setMemoryLimit(Number(e.target.value))}
+                  onChange={(e) => setMemoryLimit(e.target.value === '' ? '' : Number(e.target.value))}
                   required
                   sx={{
                     "& .MuiOutlinedInput-root": {

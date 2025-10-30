@@ -56,7 +56,7 @@ const Community = () => {
   const [newPost, setNewPost] = useState({
     title: "",
     content: "",
-    category: "",
+    category: "", // This should be empty by default
     tags: [],
   });
   const [tagInput, setTagInput] = useState("");
@@ -985,13 +985,13 @@ const Community = () => {
           <DialogContent dividers>
             <Box sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(6, 1fr)',
-              gridTemplateRows: 'repeat(4, 1fr)',
-              gap: '24px',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gridTemplateRows: 'repeat(3, 1fr)',
+              gap: '8px',
               mt: 1
             }}>
-              {/* Post Title - div1 { grid-area: 1 / 1 / 2 / 3; } */}
-              <Box sx={{ gridArea: '1 / 1 / 2 / 3' }}>
+              {/* Post Title - div1 */}
+              <Box sx={{ gridArea: '1 / 1 / 2 / 2' }}>
                 <TextField
                   fullWidth
                   label="Post Title"
@@ -1001,26 +1001,69 @@ const Community = () => {
                 />
               </Box>
 
-              {/* Category Dropdown - div2 { grid-area: 2 / 1 / 3 / 3; } */}
-              <Box sx={{ gridArea: '2 / 1 / 3 / 3' }}>
+              {/* Category Dropdown - div2 { grid-row: span 2 / span 2; grid-column-start: 1; grid-row-start: 2; } */}
+              <Box sx={{
+                gridRow: 'span 2 / span 2',
+                gridColumnStart: 1,
+                gridRowStart: 2
+              }}>
                 <FormControl fullWidth>
                   <InputLabel>Category</InputLabel>
                   <Select
                     value={newPost.category}
                     label="Category"
                     onChange={(e) => handleNewPostChange('category', e.target.value)}
+                    displayEmpty
+                    MenuProps={{
+                      sx: {
+                        zIndex: 9999,
+                      },
+                      anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                      transformOrigin: {
+                        vertical: 'top',
+                        horizontal: 'left',
+                      },
+                      getContentAnchorEl: null,
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
+                      },
+                    }}
                   >
-                    {categories.map((category) => (
-                      <MenuItem key={category.id} value={category.name}>
-                        {category.name}
-                      </MenuItem>
-                    ))}
+                    {categories && categories.length > 0 ? (
+                      categories.map((category) => (
+                        <MenuItem key={category.id} value={category.name}>
+                          {category.name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      // Fallback to hardcoded categories if API fails
+                      [
+                        "General Discussion",
+                        "Problem Discussion",
+                        "Contest Discussion",
+                        "Algorithms & Data Structures",
+                        "Interview Preparation",
+                        "Resources & Tutorials"
+                      ].map((category, index) => (
+                        <MenuItem key={index} value={category}>
+                          {category}
+                        </MenuItem>
+                      ))
+                    )}
                   </Select>
                 </FormControl>
               </Box>
 
-              {/* Add Tags - div3 { grid-area: 3 / 1 / 4 / 3; } */}
-              <Box sx={{ gridArea: '3 / 1 / 4 / 3' }}>
+              {/* Add Tags - div3 { grid-column-start: 2; grid-row-start: 1; } */}
+              <Box sx={{
+                gridColumnStart: 2,
+                gridRowStart: 1
+              }}>
                 <Box sx={{ display: "flex", gap: 1, alignItems: "flex-end" }}>
                   <TextField
                     fullWidth
@@ -1045,8 +1088,10 @@ const Community = () => {
                 </Box>
               </Box>
 
-              {/* Post Content - div4 { grid-area: 1 / 3 / 4 / 7; } */}
-              <Box sx={{ gridArea: '1 / 3 / 5 / 7' }}>
+              {/* Post Content - div4 { grid-row: span 2 / span 2; } */}
+              <Box sx={{
+                gridRow: 'span 2 / span 2'
+              }}>
                 <TextField
                   fullWidth
                   label="Post Content"

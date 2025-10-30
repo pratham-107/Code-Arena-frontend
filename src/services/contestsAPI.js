@@ -88,7 +88,11 @@ export const contestAPI = {
 
   // Get a specific problem by contest ID and problem ID
   getProblemById: (contestId, problemId) => {
-    console.log("Fetching problem by contest ID and problem ID:", contestId, problemId);
+    console.log(
+      "Fetching problem by contest ID and problem ID:",
+      contestId,
+      problemId
+    );
     return API.get(`/api/contests/problems/${contestId}/${problemId}`);
   },
 };
